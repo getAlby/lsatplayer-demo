@@ -5,7 +5,7 @@ import {useDropzone} from 'react-dropzone';
 
 function Upload({url}) {
   const {acceptedFiles, getRootProps, getInputProps} = useDropzone({
-    accept: {'audio/*': ['.mp3']},
+    accept: {'audio/mpeg': ['.mp3']},
     maxFiles: 1,
     multiple: false,
     onDrop: acceptedFiles => {
