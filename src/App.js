@@ -3,6 +3,8 @@ import { Toaster } from 'react-hot-toast';
 import Player from './Player';
 import Upload from './Upload';
 
+import albyLogo from './alby-logo-figure.svg';
+
 function App({songsUrl, uploadUrl}) {
   const [songs, setSongs] = useState([]);
 
@@ -40,6 +42,9 @@ function App({songsUrl, uploadUrl}) {
           </p>
         </div>
         {songs.length > 0 ? <Player songs={songs} /> : <></>}
+        <div className="text-center">
+          <a href="https://getalby.com" target="_blank"><img src={albyLogo} alt="Powered by Alby" className="inline" /></a>
+        </div>
       </div>
       <div className="modal" id="upload">
         <div className="modal-box">
