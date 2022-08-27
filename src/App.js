@@ -34,7 +34,7 @@ function App({songsUrl, uploadUrl}) {
           <p>
             Each song costs max. 210 sats which is paid directly to the artist.
           </p>
-          <p>Make sure that you have <a href="https://getalby.com" target="_blank" className="underline">Alby</a> installed.<br /><small className="text-sm">(Without a WebLN enabled browser you can listen 30 seconds withut paying)</small></p>
+          <p>Make sure that you have <a href="https://getalby.com" target="_blank" className="underline">Alby</a> installed.<br /><small className="text-sm">(Without a Lightning enabled browser you can listen for 15 seconds without paying)</small></p>
           <p>
             As an artist <a href="#upload" className="underline">upload your track here</a> 🚀
           </p>

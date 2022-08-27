@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import AudioVisualizer from "./AudioVisualizer"; //@tiagotrindade/audio-visualizer";
 
+import stopIcon from "./stop.svg";
+import playIcon from "./play.svg";
+
 import LSATfetch from './lsat';
 
 function Player({songs}) {
@@ -11,6 +14,7 @@ function Player({songs}) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentSong, setCurrentSong] = useState({});
 
+  const [weblnEnabled, setWeblnEnabled] = useState(true);
   const [loading, setLoading] = useState(false);
   //const [audioContext, setAudioContext] = useState(new AudioContext());
   //const [audioAnalyzer, setAudioAnalyzer] = useState(audioContext.createAnalyser());
@@ -94,8 +98,8 @@ function Player({songs}) {
     let response;
     try {
       setLoading(true);
-      if (!window.webln) {
-        throw new Error("No WebLN available");
+      if (!window.webln || !weblnEnabled) {
+        throw new Error("No WebLN available or disabled");
       }
       response = await LSATfetch(nextSong.url, { cache: "no-store" }, window.localStorage);
     } catch(e) {
@@ -132,9 +136,10 @@ function Player({songs}) {
   return (
     <div className="w-96 m-auto">
       <div className="text-center">
-        <button className="btn primary mx-4" onClick={(e) => { enablePlayer(); console.log(e); playTrack(0); }}>Play</button>
-        <button className="btn primary mx-4" onClick={() => { setIsPlaying(false) } }>Stop</button>
+        {!isPlaying && (<button className="mx-4 text-6xl" onClick={(e) => { enablePlayer(); console.log(e); playTrack(0); }}><img src={playIcon} alt="Play" className="w-20 h-20" /></button>)}
+        {isPlaying && (<button className="mx-4 text-6xl" onClick={() => { setIsPlaying(false) } }><img src={stopIcon} alt="Stop" className="w-20 h-20" /></button>)}
       </div>
+
       {audioAnalyzer && (<AudioVisualizer analyser={audioAnalyzer} className="w-full h-24"></AudioVisualizer>) }
       <ul className="text-gray-900 dark:text-white menu bg-base-100 w-auto max-h-96 overflow-scroll">
         {songs.map((s, index) => {
@@ -148,6 +153,12 @@ function Player({songs}) {
         })}
       </ul>
       <audio ref={audioRef} crossOrigin="anonymous"></audio>
+      <div className="form-control">
+        <label className="label cursor-pointer">
+          <span className="label-text">Play full songs and pay the artist with sats</span>
+          <input type="checkbox" className="toggle toggle-primary" checked={weblnEnabled} onChange={() => { setWeblnEnabled(!weblnEnabled)}} />
+        </label>
+      </div>
       <p className="text-center text-sm">{loading && "loading..."}</p>
     </div>
   );
