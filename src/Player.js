@@ -1,116 +1,154 @@
-import { useEffect, useRef, useState, useCallback } from "react";
-import AudioVisualizer from "@tiagotrindade/audio-visualizer";
+import { useEffect, useRef, useState, useMemo, useCallback } from "react";
+import AudioVisualizer from "./AudioVisualizer"; //@tiagotrindade/audio-visualizer";
 
 import LSATfetch from './lsat';
 
 function Player({songs}) {
-  const [currentObjectUrl, setCurrentObjectUrl] = useState(null);
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+
+  // const [currentObjectUrl, setCurrentObjectUrl] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentSong, setCurrentSong] = useState({});
+
+  const [loading, setLoading] = useState(false);
+  //const [audioContext, setAudioContext] = useState(new AudioContext());
+  //const [audioAnalyzer, setAudioAnalyzer] = useState(audioContext.createAnalyser());
+  const [audioContext, setAudioContext] = useState();
+  const [audioAnalyzer, setAudioAnalyzer] = useState();
+  const [track, setTrack] = useState();
   const audioRef = useRef();
-  const intervalRef = useRef();
   const isReady = useRef(false);
 
-  const startTimer = () => {
-    // Clear any timers already running
-    clearInterval(intervalRef.current);
+  useEffect(() => {
+    if (isPlaying) {
+      play(currentIndex);
+    } else {
+      stop();
+    }
+  }, [currentIndex, isPlaying]);
 
-    // check if the currenty track ended and play the next song
-    intervalRef.current = setInterval(() => {
-      if (audioRef.current.ended) {
-        //URL.revokeObjectURL(currentObjectUrl);
-        next();
-      }
-    }, [1000]);
-  }
-
-
-  const next = useCallback(() => {
+  const next = () => {
     if (currentIndex < songs.length - 1) {
       setCurrentIndex(currentIndex + 1);
     } else {
       setCurrentIndex(0);
     }
-  }, [currentIndex, songs.length]);
+  }
 
+  /**
+   * Get an object URL for the current blob. Will revoke old URL if blob changes.
+   * https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL
+  function useObjectUrl (blob) {
+    const url = useMemo(() => URL.createObjectURL(blob), [blob]);
+    useEffect(() => () => URL.revokeObjectURL(url), [blob]);
+    return url;
+  }
+  */
 
-  const play = useCallback(async (index) => {
-    console.log("play");
+  useEffect(() => {
+    const _audioContext = new AudioContext();
+    const _audioAnalyzer = _audioContext.createAnalyser();
+    //const _track = _audioContext.createMediaElementSource(audioRef.current);
+    //const gainNode = _audioContext.createGain();
+    //gainNode.gain.value = 1;
+    //_track.connect(gainNode).connect(_audioAnalyzer).connect(_audioContext.destination);
+    _audioAnalyzer.connect(_audioContext.destination)
+
+    setAudioContext(_audioContext)
+    setAudioAnalyzer(_audioAnalyzer);
+    //setTrack(_track);
+    isReady.current = true;
+
+    return () => {
+      _audioAnalyzer.disconnect();
+      _audioContext.close();
+    }
+  }, []);
+
+  const enablePlayer = () => {
+    if (audioContext.state === 'suspended') {
+      audioContext.resume();
+    }
+  }
+
+  const stop = () => {
+    if (track) {
+      track.disconnect();
+      setTrack(null);
+    }
+  }
+
+  const playTrack = (index) => {
+    setCurrentIndex(index);
+    setIsPlaying(true);
+  }
+
+  const play = async (index) => {
+    stop(); // stop the potentially playing song
     const nextSong = songs[index];
     if (!nextSong) { return; }
-    audioRef.current.pause();
+    //audioRef.current.pause();
     setCurrentSong(nextSong);
+    setCurrentIndex(index);
     let response;
     try {
+      setLoading(true);
       if (!window.webln) {
-        throw new Error("No webln available");
+        throw new Error("No WebLN available");
       }
       response = await LSATfetch(nextSong.url, { cache: "no-store" }, window.localStorage);
-
     } catch(e) {
       // if something goes wrong fetch the song without lsat
       console.error(e);
       response = await fetch(nextSong.url, { cache: "no-store" });
     }
+    //response = await fetch(nextSong.url, { cache: "no-store" });
 
-    const blob = await response.blob();
-    const objectUrl = window.URL.createObjectURL(blob);
-    setCurrentObjectUrl(objectUrl);
-    audioRef.current.src = objectUrl;
-    audioRef.current.load();
-    audioRef.current.play();
-
-    // Clear any timers already running
-    clearInterval(intervalRef.current);
-
-    intervalRef.current = setInterval(() => {
-      if (audioRef.current.ended) {
+    // https://codepen.io/kslstn/pen/pagLqL?editors=1010
+    try {
+      const buffer = await response.arrayBuffer();
+      const decodedAudio = await audioContext.decodeAudioData(buffer);
+      const sound = audioContext.createBufferSource();
+      sound.addEventListener('ended', () => {
         next();
-      }
-    }, [1000]);
+      });
+      const gainNode = audioContext.createGain();
+      sound.connect(gainNode).connect(audioAnalyzer).connect(audioContext.destination);
+      audioAnalyzer.connect(audioContext.destination)
 
-  }, [songs, next]);
-
-
-  useEffect(() => {
-    if (isPlaying) {
-      play(currentIndex);
-      //audioRef.current.play();
-    } else {
-      audioRef.current.pause();
+      sound.buffer = decodedAudio;
+      sound.loop = false;
+      sound.start(0);
+      setLoading(false);
+      setTrack(sound);
+    } catch(e) {
+      setLoading(false);
+      console.error(e);
+      alert("Failed to play track: " + e.message);
     }
-  }, [isPlaying]);
-
-  useEffect(() => {
-    if (isReady.current) {
-      setIsPlaying(true);
-      play(currentIndex);
-    } else {
-      // Set the isReady ref as true for the next pass
-      isReady.current = true;
-    }
-  }, [currentIndex, play]);
+  }
 
   return (
     <div className="w-96 m-auto">
       <div className="text-center">
-        <button className="btn primary mx-4" onClick={() => { setIsPlaying(true) }}>Play</button>
+        <button className="btn primary mx-4" onClick={(e) => { enablePlayer(); console.log(e); playTrack(0); }}>Play</button>
         <button className="btn primary mx-4" onClick={() => { setIsPlaying(false) } }>Stop</button>
       </div>
-      <AudioVisualizer audio={audioRef} className="w-full h-24" />
+      {audioAnalyzer && (<AudioVisualizer analyser={audioAnalyzer} className="w-full h-24"></AudioVisualizer>) }
       <ul className="text-gray-900 dark:text-white menu bg-base-100 w-auto max-h-96 overflow-scroll">
         {songs.map((s, index) => {
           return (
             <li key={index} className="bordered">
-              <a className={s.id === currentSong.id ? "active" : ""} onClick={(e) => { e.preventDefault(); setCurrentIndex(index); setIsPlaying(true); } }>
+              <a className={s.id === currentSong.id ? "active" : ""} onClick={(e) => { e.preventDefault(); enablePlayer(); playTrack(index); } }>
                 {s.name} ({s.ln_address})
               </a>
             </li>
           );
         })}
       </ul>
-      <audio ref={audioRef}></audio>
+      <audio ref={audioRef} crossOrigin="anonymous"></audio>
+      <p className="text-center text-sm">{loading && "loading..."}</p>
     </div>
   );
 }
