@@ -11,7 +11,13 @@ function App({songsUrl, uploadUrl}) {
 
   useEffect(() => {
     async function fetchSongs() {
-      const response = await fetch(songsUrl, { cache: "no-store" });
+      const response = await fetch(songsUrl, {
+        cache: "no-store",
+        headers : {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+         }
+      });
       const json = await response.json();
       setSongs(json.map((entry) => {
         return {
