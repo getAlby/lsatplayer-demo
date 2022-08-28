@@ -11,9 +11,8 @@ function App({songsUrl, uploadUrl}) {
 
   useEffect(() => {
     async function fetchSongs() {
-      const response = await fetch(songsUrl);
+      const response = await fetch(songsUrl, { cache: "no-store" });
       const json = await response.json();
-      console.log(json);
       setSongs(json.map((entry) => {
         return {
           id: entry.Id,
