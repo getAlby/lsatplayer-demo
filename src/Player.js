@@ -24,13 +24,6 @@ function Player({songs}) {
   const audioRef = useRef();
   const isReady = useRef(false);
 
-  useEffect(() => {
-    if (isPlaying) {
-      play(currentIndex);
-    } else {
-      stop();
-    }
-  }, [currentIndex, isPlaying]);
 
   const next = () => {
     if (currentIndex < songs.length - 1) {
@@ -50,28 +43,20 @@ function Player({songs}) {
   }
   */
 
-  useEffect(() => {
-    const _audioContext = new AudioContext();
-    const _audioAnalyzer = _audioContext.createAnalyser();
-    //const _track = _audioContext.createMediaElementSource(audioRef.current);
-    //const gainNode = _audioContext.createGain();
-    //gainNode.gain.value = 1;
-    //_track.connect(gainNode).connect(_audioAnalyzer).connect(_audioContext.destination);
-    _audioAnalyzer.connect(_audioContext.destination)
-
-    setAudioContext(_audioContext)
-    setAudioAnalyzer(_audioAnalyzer);
-    //setTrack(_track);
-    isReady.current = true;
-
-    return () => {
-      _audioAnalyzer.disconnect();
-      _audioContext.close();
-    }
-  }, []);
 
   const enablePlayer = () => {
-    if (audioContext.state === 'suspended') {
+    if (!audioContext) {
+      const _audioContext = new AudioContext();
+      const _audioAnalyzer = _audioContext.createAnalyser();
+      _audioAnalyzer.connect(_audioContext.destination)
+      if (_audioContext.state === 'suspended') {
+        _audioContext.resume();
+      }
+      setAudioContext(_audioContext)
+      setAudioAnalyzer(_audioAnalyzer);
+      isReady.current = true;
+    }
+    if (audioContext && audioContext.state === 'suspended') {
       audioContext.resume();
     }
   }
@@ -134,10 +119,31 @@ function Player({songs}) {
     }
   }
 
+  useEffect(() => {
+    if (!audioContext) {
+      return;
+    }
+    if (isPlaying) {
+      play(currentIndex);
+    } else {
+      stop();
+    }
+  }, [currentIndex, isPlaying, audioContext]);
+
+  useEffect(() => {
+    return () => {
+      if (audioAnalyzer) {
+        audioAnalyzer.disconnect();
+        audioContext.close();
+      }
+    }
+  }, [audioAnalyzer, audioContext]);
+
+
   return (
     <div className="w-96 m-auto">
       <div className="text-center">
-        {!isPlaying && (<button className="mx-4 text-6xl" onClick={(e) => { enablePlayer(); console.log(e); playTrack(0); }}><img src={playIcon} alt="Play" className="w-20 h-20" /></button>)}
+        {!isPlaying && (<button className="mx-4 text-6xl" onClick={(e) => { enablePlayer(); playTrack(0); }}><img src={playIcon} alt="Play" className="w-20 h-20" /></button>)}
         {isPlaying && (<button className="mx-4 text-6xl" onClick={() => { setIsPlaying(false) } }><img src={stopIcon} alt="Stop" className="w-20 h-20" /></button>)}
       </div>
 
