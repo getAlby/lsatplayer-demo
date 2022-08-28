@@ -4,13 +4,12 @@ import toast from 'react-hot-toast';
 import {useDropzone} from 'react-dropzone';
 
 function Upload({url}) {
-  const {acceptedFiles, getRootProps, getInputProps} = useDropzone({
+  const {getRootProps, getInputProps} = useDropzone({
     accept: {'audio/mpeg': ['.mp3']},
     maxFiles: 1,
     multiple: false,
     onDrop: acceptedFiles => {
       const acceptedFile = acceptedFiles[0];
-      console.log(acceptedFile);
       setFile(acceptedFile);
     }
   });
@@ -51,7 +50,7 @@ function Upload({url}) {
     formData.append("price", price);
     formData.append("name", name);
     try {
-      const response = await axios.post(url, formData);
+      await axios.post(url, formData);
       window.scrollTo(0,0);
       setFile(null);
       toast('Track successfully published!', {
