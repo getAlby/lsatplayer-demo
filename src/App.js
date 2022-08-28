@@ -22,7 +22,11 @@ function App({songsUrl, uploadUrl}) {
         }
       }));
     }
-    fetchSongs();
+    if (songsUrl) {
+      fetchSongs();
+    } else {
+      console.log("Songs API not available");
+    }
   }, [songsUrl]);
 
   return (
