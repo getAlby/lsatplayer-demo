@@ -89,6 +89,7 @@ function Player({songs}) {
   }
 
   const play = async (index) => {
+    if (loading) { return; } // prevent this from being called while the song is loading
     stop(); // stop the potentially playing song
     const nextSong = songs[index];
     if (!nextSong) { return; }
