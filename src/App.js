@@ -44,9 +44,10 @@ function App({songsUrl, uploadUrl}) {
             <img src={albyLogoHead} className="w-6 h-6 inline mr-2" />The Alby WebLN Mixtape 🔊
           </p>
           <p>
-            Each song costs max. 210 sats which is paid directly to the artist.
+            Each song costs max. 210 sats. Payments for each song are streamed directly from you to the artist.
           </p>
-          <p>For best experience make sure that you have the <a href="https://getalby.com" target="_blank" className="underline">Alby Browser Extension</a> installed and set a budget.<br /><small className="text-sm">(Without a Lightning enabled browser you can listen for 15 seconds without paying)</small></p>
+          <p>
+          To enjoy the full songs make sure you have the <a href="https://getalby.com" target="_blank" className="underline">Alby Browser Extension</a> installed. Set a budget for an uninterrupted listening experience.<br /><small className="text-sm">(Without a Lightning enabled browser you can listen for 15 seconds without paying)</small></p>
           <p>
             As an artist <a href="#upload" className="underline">upload your track here</a> 🚀
           </p>
