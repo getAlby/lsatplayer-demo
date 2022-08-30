@@ -54,7 +54,7 @@ function App({songsUrl, uploadUrl}) {
         </div>
       </div>
       <div className="modal" id="upload">
-        <div className="modal-box">
+        <div className="modal-box dark:text-white">
           <Upload url={uploadUrl} />
         </div>
       </div>

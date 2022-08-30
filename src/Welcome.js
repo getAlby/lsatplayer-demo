@@ -12,7 +12,7 @@ function WelcomeModal({onEnable}) {
   return (
     <>
       <input type="checkbox" checked={showModal} onChange={handleEnable} id="welcome-modal" className="modal-toggle" />
-      <div className="modal text-black">
+      <div className="modal text-black dark:text-white">
         <div className="modal-box">
           <h3 className="font-bold text-xl">Welcome to the Bitcoin Lightning Mixtape!</h3>
           <p className="py-4">
