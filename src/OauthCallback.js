@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState, useMemo, useCallback } from "react";
 
 const OauthCallback = () => {
+  const [error, setError] = useState(null);
+
   useEffect(() => {
     console.log("use effect");
     if (!window.opener) {
@@ -11,7 +13,11 @@ const OauthCallback = () => {
     const code = params.get("code");
     const error = params.get("error");
 
+    if (!code) {
+      setError("declined");
+    }
     if (error) {
+      setError(error);
       alert(error);
       return;
     }
@@ -24,7 +30,14 @@ const OauthCallback = () => {
   }, []);
 
   return (
-    <div>Connected. you can close this window.</div>
+    <div>
+      {error && (
+        <p>Authorization failed: {error}</p>
+      )}
+      {!error && (
+        <p>Connected. you can close this window.</p>
+      )}
+    </div>
   )
 
 }

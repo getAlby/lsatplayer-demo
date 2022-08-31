@@ -9,6 +9,10 @@ function WelcomeModal({onEnable}) {
     if (!visited) {
       setShowModal(true);
     }
+    const key = window.localStorage.getItem("alby_access_token");
+    if (window.webln?.oauth && !key) {
+      setShowModal(true);
+    }
   }, []);
 
   const handleEnable = (e) => {
@@ -30,7 +34,7 @@ function WelcomeModal({onEnable}) {
             Each track on the Lightning Mixtape costs max. 210 sats and is paid directly from your wallet to the artist!
           </p>
           <p className="pb-4">
-            To enjoy the full songs make sure you have the <a href="https://getalby.com" target="_blank" className="underline">Alby Browser Extension</a> installed and set a budget for an uninterrupted listening experience.<br /><small className="text-sm">(Without a Lightning enabled browser you can listen for 15 seconds without paying)</small>
+            To enjoy the full songs you need to have the <a href="https://getalby.com" target="_blank" className="underline">Alby Browser Extension</a> installed or an <a href="https://getalby.com" target="_blank" className="underline">Alby wallet account</a>. Set a budget for an uninterrupted listening experience.<br /><small className="text-sm">(Without paying you can listen for 15 seconds)</small>
           </p>
           <p className="py-4">
             The Bitcoin Lightning network is changing how we reward digital content and the <a href="https://getalby.com" target="_blank" className="underline">Alby Browser Extension</a> upgrades your browser to this new open payment network and allows seamless (peer to peer) payments.
