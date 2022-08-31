@@ -149,7 +149,7 @@ function Player({songs}) {
 
   return (
     <>
-      <div className="w-2/3 min-w-min m-auto">
+      <div className="w-2/3 min-w-fit m-auto">
         <div className="text-center">
           {!isPlaying && (<button className="mx-4 text-6xl" onClick={(e) => { enablePlayer(); playTrack(0); }}><img src={playIcon} alt="" className="w-16 h-16" /></button>)}
           {isPlaying && (<button className="mx-4 text-6xl" onClick={() => { setIsPlaying(false) } }><img src={stopIcon} alt="" className="w-16 h-16" /></button>)}
@@ -160,8 +160,8 @@ function Player({songs}) {
           {songs.map((s, index) => {
             return (
               <li key={index} className="bordered">
-                <a className={s.id === currentSong.id ? "active" : ""} onClick={(e) => { e.preventDefault(); enablePlayer(); playTrack(index); } }>
-                  {s.name} <span className="text-slate-400">({s.price} sats {s.ln_address})</span>
+                <a className={s.id === currentSong.id ? "py-1 px-3 block active " : "py-1 px-3 block"} onClick={(e) => { e.preventDefault(); enablePlayer(); playTrack(index); } }>
+                  <p>{s.name}</p><p className="text-slate-400 text-xs">({s.price} sats {s.ln_address})</p>
                 </a>
               </li>
             );
