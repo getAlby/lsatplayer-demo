@@ -98,7 +98,7 @@ function Upload({url}) {
         <label className="label">
           <span className="label-text">Track Name</span>
         </label>
-        <input type="text" value={name} placeholder="" onChange={(e) => { setName(e.target.value); }} className="input input-bordered w-full" />
+        <input type="text" value={name} placeholder="Track - Artist" onChange={(e) => { setName(e.target.value); }} className="input input-bordered w-full" />
       </div>
 
       <div className="form-control w-full">
