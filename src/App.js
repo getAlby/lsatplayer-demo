@@ -3,11 +3,25 @@ import { Toaster } from 'react-hot-toast';
 import Player from './Player';
 import Upload from './Upload';
 
+import WebLNProvider from './webln';
+
 import albyLogo from './alby-logo-figure.svg';
 import albyLogoHead from './alby-logo-head.svg';
 
 function App({songsUrl, uploadUrl}) {
   const [songs, setSongs] = useState([]);
+
+  useEffect(() => {
+    if (window.webln) {
+      return;
+    }
+    window.webln = new WebLNProvider({
+      authorizeEndpoint: "https://getalby.com/oauth",
+      tokenEndpoint: "https://api.getalby.com/oauth/token",
+      clientId: "DnIP8E3dWI",
+      scope:"payments:send"
+    });
+  }, []);
 
   useEffect(() => {
     async function fetchSongs() {

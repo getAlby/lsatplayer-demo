@@ -18,6 +18,7 @@ function Player({songs}) {
 
   const [weblnEnabled, setWeblnEnabled] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   //const [audioContext, setAudioContext] = useState(new AudioContext());
   //const [audioAnalyzer, setAudioAnalyzer] = useState(audioContext.createAnalyser());
   const [audioContext, setAudioContext] = useState();
@@ -46,6 +47,7 @@ function Player({songs}) {
   */
 
   const enablePlayer = () => {
+    window.webln.enable();
     if (!audioContext) {
       console.log("init audio context");
       const _audioContext = new AudioContext();
@@ -94,6 +96,7 @@ function Player({songs}) {
       // if something goes wrong fetch the song without lsat
       console.error(e);
       response = await fetch(nextSong.url, { cache: "no-store" });
+      setError(e.message);
     }
     //response = await fetch(nextSong.url, { cache: "no-store" });
 
@@ -170,6 +173,7 @@ function Player({songs}) {
           </label>
         </div>
         <p className="text-center text-sm">{loading && "loading..."}</p>
+        {error && (<p className="text-center text-sm">{error}</p>)}
       </div>
       <WelcomeModal onEnable={enablePlayer} />
     </>
