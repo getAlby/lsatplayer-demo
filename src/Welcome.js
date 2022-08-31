@@ -1,11 +1,19 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function WelcomeModal({onEnable}) {
-  const [showModal, setShowModal] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    const visited = window.localStorage.getItem("alby_mixtape_visited");
+    if (!visited) {
+      setShowModal(true);
+    }
+  }, []);
 
   const handleEnable = (e) => {
     setShowModal(false)
+    window.localStorage.setItem("alby_mixtape_visited", true);
     onEnable();
   }
 
