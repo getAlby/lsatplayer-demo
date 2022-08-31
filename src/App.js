@@ -18,7 +18,7 @@ function App({songsUrl, uploadUrl}) {
     window.webln = new WebLNProvider({
       authorizeEndpoint: "https://getalby.com/oauth",
       tokenEndpoint: "https://api.getalby.com/oauth/token",
-      clientId: "DnIP8E3dWI",
+      clientId: "S08XRny1Iy",
       scope:"payments:send"
     });
   }, []);
