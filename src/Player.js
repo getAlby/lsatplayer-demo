@@ -88,6 +88,7 @@ function Player({songs}) {
     let response;
     try {
       setLoading(true);
+      setError(null);
       if (!window.webln || !weblnEnabled) {
         throw new Error("No WebLN available or disabled");
       }
@@ -119,6 +120,7 @@ function Player({songs}) {
       setTrack(sound);
     } catch(e) {
       setLoading(false);
+      setError(e.message);
       console.error(e);
       alert("Failed to play track: " + e.message);
     }
