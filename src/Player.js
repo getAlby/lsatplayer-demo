@@ -30,7 +30,7 @@ function Player({songs}) {
 
   const next = () => {
     if (currentIndex < songs.length - 1) {
-      setCurrentIndex(currentIndex + 1);
+      setCurrentIndex((currentIndex) => currentIndex + 1);
     } else {
       setCurrentIndex(0);
     }
