@@ -29,11 +29,13 @@ function Player({songs}) {
 
 
   const next = () => {
-    if (currentIndex < songs.length - 1) {
-      setCurrentIndex((currentIndex) => currentIndex + 1);
-    } else {
-      setCurrentIndex(0);
-    }
+    setCurrentIndex((currently) => {
+      if (currently < songs.length - 1) {
+        return currently +1;
+      } else {
+        return 0;
+      }
+    });
   }
 
   /**
