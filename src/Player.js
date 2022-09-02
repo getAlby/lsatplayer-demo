@@ -84,7 +84,7 @@ function Player({songs}) {
     if (!nextSong) { return; }
     //audioRef.current.pause();
     setCurrentSong(nextSong);
-    setCurrentIndex(index);
+    console.log(`Playing #${index}:`, nextSong);
     let response;
     try {
       setLoading(true);
@@ -106,14 +106,14 @@ function Player({songs}) {
       const buffer = await response.arrayBuffer();
       const decodedAudio = await audioContext.decodeAudioData(buffer);
       const sound = audioContext.createBufferSource();
-      sound.addEventListener('ended', () => {
-        next();
-      });
+      sound.buffer = decodedAudio;
       const gainNode = audioContext.createGain();
       sound.connect(gainNode).connect(audioAnalyzer).connect(audioContext.destination);
       audioAnalyzer.connect(audioContext.destination)
 
-      sound.buffer = decodedAudio;
+      sound.addEventListener('ended', () => {
+        next();
+      });
       sound.loop = false;
       sound.start(0);
       setLoading(false);
