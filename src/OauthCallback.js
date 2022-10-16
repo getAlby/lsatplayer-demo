@@ -23,7 +23,7 @@ const OauthCallback = () => {
     }
 
     window.opener.postMessage({
-      type: 'oauth:success',
+      type: 'alby:oauth:success',
       payload: {code},
     });
 

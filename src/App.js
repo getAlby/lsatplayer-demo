@@ -3,7 +3,7 @@ import { Toaster } from 'react-hot-toast';
 import Player from './Player';
 import Upload from './Upload';
 
-import WebLNProvider from './webln';
+import { auth, WebLNProvider } from "alby-js-sdk";
 
 import albyLogo from './alby-logo-figure.svg';
 import albyLogoHead from './alby-logo-head.svg';
@@ -15,12 +15,27 @@ function App({songsUrl, uploadUrl}) {
     if (window.webln) {
       return;
     }
-    window.webln = new WebLNProvider({
-      authorizeEndpoint: "https://getalby.com/oauth",
-      tokenEndpoint: "https://api.getalby.com/oauth/token",
-      clientId: "S08XRny1Iy",
-      scope:"payments:send"
+
+    let token = {};
+    const tokenData = window.localStorage.getItem("albyToken");
+    if (tokenData) {
+      token = JSON.parse(tokenData);
+    }
+    const authClient = new auth.OAuth2User({
+      client_id: "S08XRny1Iy",
+      callback: `${document.location.protocol}//${document.location.host}/callback`,
+      scopes: ["payments:send"],
+      token: token,
     });
+    const provider = new WebLNProvider({auth: authClient});
+    provider.on('enable', () => {
+      const tokenData = JSON.stringify(provider.auth.token);
+      window.localStorage.setItem("albyToken", tokenData);
+    });
+    provider.on('sendPayment', (result) => {
+      console.log('paid: ', result);
+    });
+    window.webln = provider;
   }, []);
 
   useEffect(() => {
