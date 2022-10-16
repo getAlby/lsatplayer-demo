@@ -2449,10 +2449,10 @@ ajv@^8.0.0, ajv@^8.6.0, ajv@^8.8.0:
     require-from-string "^2.0.2"
     uri-js "^4.2.2"
 
-alby-js-sdk@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/alby-js-sdk/-/alby-js-sdk-1.1.0.tgz#59f644ce338df371d0ba54e08952aec124839a91"
-  integrity sha512-KcS1Ez1H2SlAVOirHg1TcQZvKNmBemPGwolNKp5AwkHR6D1lCZm7t64di2IFfe2qjIhhjKtqi9uLZkuszkQthQ==
+alby-js-sdk@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/alby-js-sdk/-/alby-js-sdk-1.1.1.tgz#ea31498b2ba2c671ee8f572fc32fc12f9bfda818"
+  integrity sha512-HUvtze3IfIKikY/+7adTHRgJW/NCghp2Vm3Q1az2U443hgDJ9hJ3pAhyuPH5uGCYhRHA7IbI03xO1yPFr/RTCg==
   dependencies:
     cross-fetch "^3.1.5"
     crypto-js "^4.1.1"
