@@ -26,6 +26,7 @@ const OauthCallback = () => {
       type: 'alby:oauth:success',
       payload: {code},
     });
+    console.log("message published");
 
   }, []);
 
