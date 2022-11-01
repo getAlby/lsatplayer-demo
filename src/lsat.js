@@ -39,8 +39,8 @@ const LSATfetch = async (url, fetchArgs, store) => {
   }
 
   const parts = header.split(",");
-  const mac = parts[0].replace("LSAT macaroon=", "").trimStart();
-  const inv = parts[1].replace("invoice=", "").trimStart();
+  const mac = parts[0].replace("LSAT macaroon=", "").trim();
+  const inv = parts[1].replace("invoice=", "").trim();
 
   await window.webln.enable();
   const invResp = await window.webln.sendPayment(inv);

@@ -9,10 +9,6 @@ function WelcomeModal({onEnable}) {
     if (!visited) {
       setShowModal(true);
     }
-    const key = window.localStorage.getItem("alby_access_token");
-    if (window.webln?.oauth && !key) {
-      setShowModal(true);
-    }
   }, []);
 
   const handleEnable = (e) => {
@@ -39,9 +35,6 @@ function WelcomeModal({onEnable}) {
           <p className="py-4">
             The Bitcoin Lightning network is changing how we reward digital content and the <a href="https://getalby.com" target="_blank" className="underline">Alby Browser Extension</a> upgrades your browser to this new open payment network and allows seamless (peer to peer) payments.
           </p>
-
-          {(!window.webln || window.webln.oauth) && <p className="py-4 font-bold">You do not have a WebLN enabled browser. We will prompt you to connect your Alby account.</p>}
-
 
           <div className="modal-action">
             <label htmlFor="welcome-modal" onClick={handleEnable} className="btn">Great, let's go!</label>
